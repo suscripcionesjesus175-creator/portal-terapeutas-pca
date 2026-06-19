@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal Terapeutas V2.1 | Agenda 4 semanas</title>
+<style>
+:root{
+  --green-dark:#033b1f;
+  --green:#0f6b35;
+  --green-soft:#e7f5ec;
+  --cream:#fff8dc;
+  --pink:#f7c6c7;
+  --blue-line:#1d4ed8;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#667085;
+  --border:#d9e1ec;
+  --red:#e5484d;
+  --red-bg:#fff0f0;
+  --amber:#a16207;
+  --amber-bg:#fff7e6;
+  --ok:#15803d;
+  --ok-bg:#e9f8f0;
+  --shadow:0 12px 28px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+.hidden{display:none!important}
+.btn{border:0;border-radius:14px;min-height:42px;padding:0 12px;font-weight:800;background:#eaf2ff;color:#155ed6;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;touch-action:manipulation}
+.btn.primary{background:#155ed6;color:#fff}
+.btn.danger{background:var(--red-bg);color:var(--red)}
+.btn.small{min-height:34px;border-radius:11px;font-size:12px;padding:0 9px}
+input{width:100%;border:1px solid var(--border);border-radius:14px;padding:11px 12px;background:#fff;outline:none}
+label{font-size:12px;font-weight:800;color:#34405f}
+.form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.msg{margin-top:10px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:800}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.msg.error{background:var(--red-bg);color:var(--red)}
+
+.login{min-height:100dvh;display:grid;place-items:center;padding:18px;background:linear-gradient(150deg,#02205f,#0f6b35)}
+.login-card{width:min(430px,100%);background:#fff;border-radius:24px;padding:22px;box-shadow:0 28px 90px rgba(0,0,0,.24)}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#0f6b35,#155ed6);display:grid;place-items:center;font-size:26px;color:#fff}
+.brand h1{font-size:20px;line-height:1.08;margin:0}
+.login-card h2{margin:0 0 6px;font-size:25px;letter-spacing:-.04em}
+.login-card p{margin:0 0 18px;color:var(--muted);font-weight:700}
+
+.app{min-height:100dvh;padding-bottom:76px}
+.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 12px calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;justify-content:space-between;gap:10px}
+.user{display:flex;align-items:center;gap:10px;min-width:0}
+.avatar{width:42px;height:42px;border-radius:14px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:900}
+.user h2{margin:0;font-size:14px;max-width:185px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user span{display:block;margin-top:1px;font-size:11px;color:var(--muted);font-weight:700}
+
+.content{padding:12px}
+.module{display:none}
+.module.active{display:block}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-h{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.card-h h3{margin:0;font-size:16px}
+.card-h small{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-top:2px}
+.card-b{padding:12px}
+.toolbar{display:flex;gap:8px;align-items:center;overflow:auto;padding-bottom:8px}
+.toolbar input{min-width:150px;max-width:160px}
+
+.week-stack{display:flex;flex-direction:column;gap:13px}
+.week-card{background:#fff;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;box-shadow:0 8px 18px rgba(15,23,42,.06)}
+.week-title{display:grid;grid-template-columns:58px repeat(7, minmax(72px,1fr));background:var(--green-dark);color:#fff;font-weight:900;font-size:10px;line-height:1.05;text-align:center}
+.week-title div{padding:5px 3px;border-right:1px solid rgba(255,255,255,.25)}
+.week-title .wknum{font-size:16px;display:flex;align-items:center;justify-content:center}
+.week-scroll{overflow-x:auto;background:#fff}
+.week-grid{display:grid;grid-template-columns:58px repeat(7, minmax(72px,1fr));min-width:620px}
+.time-cell{font-size:10px;font-weight:900;background:var(--green-dark);color:#fff;padding:3px 4px;border-right:1px solid #93c5fd;border-bottom:1px solid #93c5fd;text-align:center;min-height:24px;display:flex;align-items:center;justify-content:center}
+.slot{min-height:24px;border-right:1px solid #2563eb;border-bottom:1px solid #2563eb;background:#fff4c7;padding:2px;position:relative}
+.week-card.past .slot{background:#e6e1ff}
+.week-card.current .slot{background:#f5d0d0}
+.week-card.next .slot{background:#e3f5db}
+.week-card.future .slot{background:#fff6d7}
+.appt-name{display:block;width:100%;border:0;border-radius:4px;padding:2px 3px;text-align:left;font-size:9px;font-weight:800;line-height:1.05;color:#09205f;background:#d9f99d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.appt-name.confirmada{background:#bfdbfe}
+.appt-name.asistio{background:#86efac}
+.appt-name.pendiente{background:#fde68a}
+.appt-name.cancelada{background:#fecaca;text-decoration:line-through}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.legend span{font-size:11px;font-weight:800;border-radius:999px;padding:4px 7px;background:#f1f5f9;color:#334155}
+.help{font-size:12px;color:var(--muted);font-weight:700;margin:0 0 10px}
+
+.fin-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:#fff}
+.fin-table{border-collapse:collapse;width:100%;min-width:520px;font-size:12px}
+.fin-table th{background:var(--green-dark);color:#fff;text-align:left;padding:8px 7px;font-size:11px}
+.fin-table td{border-bottom:1px solid #e5e7eb;padding:8px 7px;font-weight:700}
+.fin-table tr:nth-child(even) td{background:#f8fafc}
+.money{font-weight:900;white-space:nowrap;color:var(--green)}
+.money.bad{color:var(--red)}
+.status{border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900;display:inline-flex}
+.status.pago{background:var(--ok-bg);color:var(--ok)}
+.status.pendiente{background:var(--red-bg);color:var(--red)}
+.status.parcial{background:var(--amber-bg);color:var(--amber)}
+.summary-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.sum-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px}
+.sum-card small{display:block;color:var(--muted);font-size:11px;font-weight:800}
+.sum-card strong{display:block;margin-top:2px;font-size:21px;letter-spacing:-.04em}
+.discount-list{display:grid;gap:7px}
+.discount-item{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--border);border-radius:13px;padding:9px;background:#fff}
+.discount-item strong{font-size:12px}
+.discount-item span{font-size:11px;color:var(--muted);font-weight:700}
+.empty{border:1px dashed #b7c5da;border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-weight:800;background:#fff}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{border:0;background:#eef3ff;color:#42526b;border-radius:16px;min-height:52px;font-size:11px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.tab span{font-size:19px}
+.tab.active{background:#155ed6;color:#fff}
+.loading{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:#fff;border:1px solid var(--border);border-radius:999px;box-shadow:var(--shadow);padding:9px 13px;font-size:13px;font-weight:900;color:#155ed6;display:none}
+.loading.show{display:block}
+.security-timeout-overlay{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(2,6,23,.72);backdrop-filter:blur(7px)}
+.security-timeout-overlay.show{display:flex}
+.security-timeout-card{width:min(520px,100%);background:#fff;border-radius:24px;box-shadow:0 30px 100px rgba(0,0,0,.36);padding:28px;text-align:center;border:1px solid var(--border)}
+.security-timeout-count{display:inline-flex;align-items:center;justify-content:center;min-width:92px;min-height:44px;border-radius:999px;background:var(--red-bg);color:var(--red);font-size:20px;font-weight:950;margin:10px 0 18px}
+@media(min-width:980px){
+  .content{max-width:1180px;margin:0 auto}
+  .week-title,.week-grid{grid-template-columns:64px repeat(7,1fr)}
+  .week-grid{min-width:0}
+  .week-title{font-size:11px}
+  .appt-name{font-size:10px}
+}
+
+/* === V2.5 Finanzas: pendientes al inicio === */
+.sum-card strong .sum-count{display:inline-block;margin-left:8px;font-size:12px;font-weight:950;color:#667085;background:#eef3ff;border-radius:999px;padding:3px 7px;vertical-align:middle}
+.pending-box{border:1px solid #ffd7a8;background:#fffaf0;border-radius:18px;margin:0 0 12px;overflow:hidden}
+.pending-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border-bottom:1px solid #ffe3bd}
+.pending-head strong{display:block;font-size:14px;color:#92400e}
+.pending-head span{display:block;font-size:11px;color:#a16207;font-weight:900;margin-top:2px}
+.pending-list{display:grid;gap:7px;padding:10px}
+.pending-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid #ffe8c7;background:#fff;border-radius:14px;padding:9px 10px}
+.pending-item b{display:block;font-size:13px;color:#0e1a3d;line-height:1.15}
+.pending-item small{display:block;color:#667085;font-size:11px;font-weight:850;margin-top:3px;line-height:1.25}
+.pending-amount{font-size:13px;font-weight:950;color:#dc2626;white-space:nowrap}
+.pending-item .pill-mini{display:inline-block;margin-top:5px;border-radius:999px;padding:2px 7px;font-size:10px;font-weight:950;background:#fff7e6;color:#a16207}
+@media(max-width:420px){.pending-item{grid-template-columns:1fr}.pending-amount{text-align:left}.sum-card strong .sum-count{display:block;width:max-content;margin:5px 0 0}}
+
+
+/* === V2.6 Ajustes: tablas compactas y nuevos módulos === */
+.fin-table.compact th{padding:6px 6px;font-size:10px}
+.fin-table.compact td{padding:5px 6px;font-size:11px;line-height:1.15}
+.pending-box.compact{border-radius:14px;margin-bottom:10px}
+.pending-box.compact .pending-head{padding:8px 10px}
+.pending-box.compact .pending-list{gap:4px;padding:7px}
+.pending-box.compact .pending-item{padding:6px 8px;border-radius:10px;gap:6px}
+.pending-box.compact .pending-item b{font-size:12px}
+.pending-box.compact .pending-item small{font-size:10px;margin-top:2px}
+.pending-box.compact .pending-amount{font-size:12px}
+.module-kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.module-kpi{border:1px solid var(--border);border-radius:14px;background:#fff;padding:10px}
+.module-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:900}
+.module-kpi strong{display:block;font-size:20px;margin-top:2px;letter-spacing:-.04em}
+.module-toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px}
+.module-toolbar .form-group{margin-bottom:0}
+.module-toolbar label{font-size:11px}
+.mini-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:#fff}
+.mini-table{width:100%;border-collapse:collapse;min-width:680px;font-size:11px}
+.mini-table th{background:#0b5b3f;color:#fff;text-align:left;padding:6px}
+.mini-table td{border-bottom:1px solid #e5e7eb;padding:6px;vertical-align:middle}
+.mini-table tr:nth-child(even) td{background:#f8fafc}
+.action-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.action-row input{min-width:118px;padding:8px;border-radius:10px;font-size:11px}
+.action-row .btn{min-height:34px;border-radius:10px;font-size:11px;padding:0 9px}
+.no-future-card,.slot-card{border:1px solid var(--border);border-radius:14px;background:#fff;padding:9px;margin-bottom:7px}
+.no-future-card b,.slot-card b{display:block;font-size:13px;color:#0e1a3d}
+.no-future-card small,.slot-card small{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-top:2px}
+.no-future-grid{display:grid;grid-template-columns:1fr;gap:7px}
+.free-slot-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:900;color:#334155}
+.toggle input{width:auto}
+.tabs{grid-template-columns:repeat(6,1fr);gap:5px;padding-left:6px;padding-right:6px}
+.tab{min-height:50px;font-size:9px;border-radius:13px}
+.tab span{font-size:16px}
+@media(max-width:520px){
+  .module-toolbar{grid-template-columns:1fr 1fr}
+  .module-toolbar .btn{grid-column:1 / -1}
+  .tabs{overflow-x:auto;display:flex}
+  .tab{min-width:72px}
+}
+
+
+/* === V2.7 Tablas tipo hoja === */
+.sheet-panel{background:#fff;border:1px solid #c7d2e1;border-radius:0;box-shadow:none;margin-bottom:14px;overflow:auto}
+.sheet-title{font-weight:950;font-size:16px;padding:4px 6px;border-bottom:1px solid #c7d2e1;background:#fff}
+.sheet-summary{display:grid;grid-template-columns:repeat(6,minmax(80px,1fr));border-bottom:1px solid #c7d2e1}
+.sheet-summary>div{min-height:36px;border-right:1px solid #d7dde7;padding:5px 6px;font-size:13px;display:flex;align-items:center;gap:6px}
+.sheet-summary label{font-size:12px;color:#0f172a;font-weight:900}
+.sheet-summary input,.sheet-summary select{height:30px;border:0;background:#fff;padding:4px;font-size:13px;border-radius:0}
+.sheet-table{width:100%;border-collapse:collapse;min-width:720px;font-size:12px}
+.sheet-table th{background:#dbe3f0;color:#0f172a;border:1px solid #aeb8c7;padding:5px 4px;font-style:italic;font-weight:850;text-align:center}
+.sheet-table td{border:1px solid #c8ced8;padding:4px;background:#fff;vertical-align:middle}
+.sheet-table tr:nth-child(even) td{background:#f8fafc}
+.sheet-table input{height:30px;border:0;background:transparent;padding:3px;font-size:12px;border-radius:0;text-align:center}
+.sheet-btn{border:0;border-radius:10px;min-height:32px;padding:0 10px;font-weight:950;background:#1763e6;color:#fff;font-size:12px}
+.sheet-btn.light{background:#e8f0ff;color:#155ed6}
+.spaces-controls{display:grid;grid-template-columns:150px auto auto auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.spaces-grid-wrap{overflow:auto}
+.spaces-grid{min-width:720px;border-collapse:collapse;width:100%;font-size:11px}
+.spaces-grid th{background:#dbeafe;color:#0b2456;border:2px solid #111;padding:4px;text-align:center}
+.spaces-grid td{border:2px solid #111;text-align:center;padding:0;height:28px;background:#fff}
+.spaces-grid .hour-cell{background:#eaf2ff;font-weight:900;width:82px}
+.spaces-grid .date-row th{background:#e5e7eb;font-size:9px}
+.sheet-free-btn{background:#fff;color:#111;border:0;width:100%;height:100%;min-height:28px;font-size:11px;font-weight:800}
+.sheet-free-btn.selected{background:#ef4444;color:#fff}
+.sheet-occupied{display:block;background:#7ecf50;color:#000;text-align:center;font-size:11px;font-weight:800;min-height:28px;line-height:28px}
+.available-sheet{max-width:980px;margin:26px auto 0;padding:28px 22px 20px;background:linear-gradient(180deg,#ffffff 0%,#fafcff 100%);border-radius:28px;border:1px solid #e8eef8;box-shadow:0 18px 44px rgba(15,23,42,.10)}
+.available-header{text-align:center;margin-bottom:20px}
+.available-logo{width:74px;height:74px;border-radius:999px;margin:0 auto 14px;background:#eef7f8;border:2px solid #83d1d2;color:#15959d;display:flex;align-items:center;justify-content:center;font-size:34px}
+.available-header h3{margin:0;color:#16284d;font-size:40px;line-height:1.05;font-weight:1000;letter-spacing:-.04em}
+.available-header p{margin:10px 0 0;color:#57657f;font-size:18px;font-weight:500}
+.available-days{display:grid;gap:18px}
+.available-day-card{display:grid;grid-template-columns:10px 108px 1fr;align-items:center;gap:18px;background:#fff;border-radius:24px;padding:18px 22px;box-shadow:0 12px 24px rgba(15,23,42,.08);overflow:hidden}
+.available-day-accent{height:100%;border-radius:999px}
+.available-day-icon{width:94px;height:94px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:700}
+.available-day-main{display:grid;grid-template-columns:minmax(180px,240px) 1fr;gap:22px;align-items:center}
+.available-day-info{padding-right:18px;border-right:2px solid #e8edf6}
+.available-day-name{font-size:26px;line-height:1.05;font-weight:1000;text-transform:lowercase;margin-bottom:6px}
+.available-day-date{font-size:17px;color:#46536b;font-weight:600}
+.available-time-chips{display:flex;flex-wrap:wrap;gap:14px}
+.available-time-chip{min-width:170px;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:18px;font-size:18px;font-weight:900}
+.available-time-chip .clock{font-size:20px;line-height:1}
+.available-list-empty{padding:24px;border:2px dashed #d7e1f0;border-radius:18px;text-align:center;color:#607089;font-weight:700;background:#fff}
+.available-actions{margin-top:18px;display:flex;justify-content:center}
+.available-actions .btn{padding:12px 22px;border-radius:14px}
+.tabs{grid-template-columns:repeat(6,1fr);gap:5px;padding-left:6px;padding-right:6px}
+.tab{min-height:50px;font-size:9px;border-radius:13px}
+.tab span{font-size:16px}
+@media(max-width:640px){
+  .sheet-summary{grid-template-columns:repeat(2,1fr)}
+  .spaces-controls{grid-template-columns:1fr 1fr}
+  .tabs{overflow-x:auto;display:flex}
+  .tab{min-width:72px}
+}
+
+
+/* === V2.9 Horarios libres: colores por día y toggle === */
+.available-day-1 .available-day-accent{background:#2563eb}.available-day-1 .available-day-icon{background:#e9efff;color:#2563eb}.available-day-1 .available-day-name{color:#2563eb}.available-day-1 .available-time-chip{background:#e9efff;color:#1e40af}
+.available-day-2 .available-day-accent{background:#22c55e}.available-day-2 .available-day-icon{background:#e9f9ee;color:#22c55e}.available-day-2 .available-day-name{color:#22c55e}.available-day-2 .available-time-chip{background:#e9f9ee;color:#166534}
+.available-day-3 .available-day-accent{background:#8b5cf6}.available-day-3 .available-day-icon{background:#f1ebff;color:#8b5cf6}.available-day-3 .available-day-name{color:#7c3aed}.available-day-3 .available-time-chip{background:#f1ebff;color:#5b21b6}
+.available-day-4 .available-day-accent{background:#ec4899}.available-day-4 .available-day-icon{background:#ffeaf4;color:#ec4899}.available-day-4 .available-day-name{color:#db2777}.available-day-4 .available-time-chip{background:#ffeaf4;color:#9d174d}
+.available-day-5 .available-day-accent{background:#06b6d4}.available-day-5 .available-day-icon{background:#e8fbff;color:#06b6d4}.available-day-5 .available-day-name{color:#0891b2}.available-day-5 .available-time-chip{background:#e8fbff;color:#0f766e}
+.available-day-6 .available-day-accent{background:#f59e0b}.available-day-6 .available-day-icon{background:#fff5df;color:#d97706}.available-day-6 .available-day-name{color:#d97706}.available-day-6 .available-time-chip{background:#fff5df;color:#b45309}
+.available-day-0 .available-day-accent{background:#f97316}.available-day-0 .available-day-icon{background:#ffefe5;color:#f97316}.available-day-0 .available-day-name{color:#ea580c}.available-day-0 .available-time-chip{background:#ffefe5;color:#c2410c}
+@media (max-width:700px){.available-sheet{padding:20px 14px 16px;border-radius:22px}.available-header h3{font-size:30px}.available-header p{font-size:15px}.available-day-card{grid-template-columns:8px 72px 1fr;gap:12px;padding:14px}.available-day-icon{width:64px;height:64px;font-size:28px}.available-day-main{grid-template-columns:1fr;gap:14px}.available-day-info{padding-right:0;padding-bottom:10px;border-right:0;border-bottom:1px solid #e8edf6}.available-day-name{font-size:20px}.available-day-date{font-size:15px}.available-time-chip{min-width:120px;padding:12px 14px;font-size:16px;border-radius:16px}}
+
+
+/* === V2.10 Espacios: bloqueo por consultorios llenos === */
+.sheet-blocked-all{display:block;background:#dc2626;color:#fff;text-align:center;font-size:10px;font-weight:950;min-height:28px;line-height:28px}
+
+
+/* === V2.13 Pendientes por agendar: marcar paciente contactado === */
+.sheet-table tr.paciente-contactado td{background:#dcfce7!important;border-color:#86efac!important}
+.sheet-table tr.paciente-contactado td:first-child::before{content:"✓ ";color:#16a34a;font-weight:950}
+
+/* === V2.15 Agenda sin desfase + frecuencia de asistencia === */
+.week-title{display:none}
+.week-scroll{overflow-x:auto;background:#fff}
+.week-grid{display:grid;grid-template-columns:64px repeat(7, minmax(150px,1fr));min-width:1120px}
+.week-head-cell{background:var(--green-dark);color:#fff;font-weight:950;font-size:10px;line-height:1.05;text-align:center;padding:6px 4px;border-right:1px solid rgba(255,255,255,.25);border-bottom:1px solid rgba(255,255,255,.25);position:sticky;top:0;z-index:2}
+.week-head-cell.wknum{font-size:16px;display:flex;align-items:center;justify-content:center}
+.week-head-cell strong{display:block;font-size:11px}
+.week-head-cell span{display:block;font-size:10px}
+.freq-row td{background:#e8f0ff!important;color:#0b3f95;font-weight:950;text-align:left;padding:7px 8px;border-top:2px solid #93b4e8}
+.freq-badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:950;margin-left:6px}
+.freq-badge.semanal{background:#dcfce7;color:#166534}
+.freq-badge.quincenal{background:#dbeafe;color:#1d4ed8}
+.freq-badge.mensual{background:#fef3c7;color:#92400e}
+.freq-badge.irregular{background:#f1f5f9;color:#475569}
+.freq-badge.nuevo{background:#fce7f3;color:#be185d}
+.freq-status{font-size:10px;font-weight:900;color:#64748b}
+.freq-status.vencido{color:#dc2626}
+.freq-status.proximo{color:#d97706}
+.freq-status.ok{color:#16a34a}
+
+</style>
+</head>
+<body>
+<div id="loading" class="loading">Cargando...</div>
+<section id="loginScreen" class="login">
+  <div class="login-card">
+    <div class="brand"><div class="logo">🧠</div><h1>Psicología Clínica<br>América</h1></div>
+    <h2>Portal terapeutas</h2>
+    <p>Agenda de 4 semanas y corte compacto.</p>
+    <div class="form-group"><label>Usuario</label><input id="loginUsuario" autocomplete="username"></div>
+    <div class="form-group"><label>Contraseña</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
+    <button class="btn primary" style="width:100%" onclick="login()">Ingresar</button>
+    <div id="loginMsg"></div>
+  </div>
+</section>
+
+<section id="appScreen" class="app hidden">
+  <header class="top">
+    <div class="user"><div class="avatar" id="avatar">T</div><div><h2 id="userName">Terapeuta</h2><span id="userMeta"></span></div></div>
+    <button class="btn small danger" onclick="cerrarSesion()">Salir</button>
+  </header>
+
+  <main class="content">
+    <section id="mod-agenda" class="module active">
+      <div class="card">
+        <div class="card-h">
+          <div><h3>Agenda 4 semanas</h3><small id="agendaRango">Semana actual, anterior y próximas</small></div>
+          <button class="btn small" onclick="cargarAgenda()">Actualizar</button>
+        </div>
+        <div class="card-b">
+          <div class="toolbar">
+            <button class="btn small" onclick="moverBase(-7)">◀</button>
+            <input id="agendaFecha" type="date" onchange="cargarAgenda()">
+            <button class="btn small" onclick="agendaHoy()">Hoy</button>
+            <button class="btn small" onclick="moverBase(7)">▶</button>
+          </div>
+          <p class="help">Toca el nombre del paciente para abrir WhatsApp con mensaje de confirmación.</p>
+          <div id="agenda4" class="week-stack"></div>
+          <div class="legend"><span>Verde: asistió</span><span>Azul: confirmada</span><span>Amarillo: pendiente</span><span>Rojo: cancelada/no asistió</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mod-finanzas" class="module">
+      <div class="card">
+        <div class="card-h"><div><h3>Finanzas compactas</h3><small id="finRango">Corte jueves a miércoles</small></div><button class="btn small" onclick="cargarFinanzas()">Actualizar</button></div>
+        <div class="card-b">
+          <div class="toolbar">
+            <button class="btn small" onclick="moverCorte(-7)">◀</button>
+            <input id="finFecha" type="date" onchange="cargarFinanzas()">
+            <button class="btn small" onclick="finHoy()">Actual</button>
+            <button class="btn small" onclick="moverCorte(7)">▶</button>
+          </div>
+          <div class="pending-box compact">
+            <div class="pending-head">
+              <div><strong>Pacientes pendientes por pagar</strong><span id="finPendientesResumen">0 pendientes · $0.00</span></div>
+            </div>
+            <div id="pendientesPagoLista" class="pending-list"><div class="empty">Cargando pendientes...</div></div>
+          </div>
+
+          <div class="summary-row">
+            <div class="sum-card"><small>Total estimado a cobrar</small><strong><span id="finTotal">$0.00</span><span id="finTotalCantidad" class="sum-count">0 pagos</span></strong></div>
+            <div class="sum-card"><small>Descuentos externos</small><strong id="finDesc">$0.00</strong></div>
+          </div>
+          <div class="fin-table-wrap">
+            <table class="fin-table compact">
+              <thead><tr><th>Fecha pagable</th><th>Paciente</th><th>Pago</th><th>Status</th><th>% Terapeuta</th><th>Monto</th><th>Método</th></tr></thead>
+              <tbody id="finTabla"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div><h3>Descuentos agregados</h3><small>Hoja CorteTerapeutasDescuentos</small></div></div>
+        <div class="card-b"><div id="descuentosLista" class="discount-list"></div></div>
+      </div>
+    </section>
+
+    
+    <section id="mod-historialPendientes" class="module">
+      <div class="card">
+        <div class="card-h"><div><h3>Historial global de pendientes</h3><small>Citas asistidas sin pago o con pago parcial</small></div><button class="btn small" onclick="cargarHistorialPendientes()">Actualizar</button></div>
+        <div class="card-b">
+          <div class="module-toolbar">
+            <div class="form-group"><label>Inicio</label><input id="histPendInicio" type="date"></div>
+            <div class="form-group"><label>Fin</label><input id="histPendFin" type="date"></div>
+            <button class="btn primary" onclick="cargarHistorialPendientes()">Buscar</button>
+          </div>
+          <div class="module-kpi-row">
+            <div class="module-kpi"><small>Total pendiente</small><strong id="histPendTotal">$0.00</strong></div>
+            <div class="module-kpi"><small>Registros</small><strong id="histPendCantidad">0</strong></div>
+          </div>
+          <div class="mini-table-wrap">
+            <table class="mini-table"><thead><tr><th>Fecha</th><th>Paciente</th><th>Servicio</th><th>Costo</th><th>Pagado</th><th>Saldo</th><th>Estado</th></tr></thead><tbody id="histPendTabla"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mod-pendientesAgendar" class="module">
+      <div class="sheet-panel">
+        <div class="sheet-title">Pacientes pendientes por agendar <button class="btn small" style="float:right" onclick="cargarPendientesAgendar()">Actualizar</button></div>
+        <div class="sheet-summary">
+          <div><span>Sin cita futura</span></div>
+          <div><strong id="pendAgCantidad">0</strong></div>
+          <div><label>Hasta días sin asistir</label></div>
+          <div><input id="pendAgDiasMin" type="number" min="0" value="40" onchange="renderPendientesAgendarFiltrado()"></div>
+          <div><label>Orden</label></div>
+          <div><select id="pendAgOrden" onchange="renderPendientesAgendarFiltrado()"><option value="az">A/Z</option><option value="diasAsc">Días menor</option><option value="diasDesc">Días mayor</option></select></div>
+        </div>
+        <div style="overflow:auto">
+          <table class="sheet-table">
+            <thead><tr><th>Nombre</th><th>Telefono</th><th>Ultima cita</th><th>Dias sin asistir</th><th>Fecha</th><th>Hora</th><th>Recepcion</th><th>Paciente</th></tr></thead>
+            <tbody id="pendAgTabla"><tr><td colspan="8"><div class="empty">Cargando pacientes...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="mod-espacios" class="module">
+      <div class="sheet-panel">
+        <div class="sheet-title">Espacios disponibles</div>
+        <div class="card-b">
+          <div class="spaces-controls">
+            <input id="espFechaBase" type="date">
+            <button class="btn small" onclick="moverSemanaEspacios(-7)">◀ Semana anterior</button>
+            <button class="btn small" onclick="semanaActualEspacios()">Semana actual</button>
+            <button class="btn small" onclick="moverSemanaEspacios(7)">Siguiente ▶</button>
+            <button class="btn primary small" onclick="actualizarEspaciosForzado()">Actualizar espacios</button>
+            <button class="btn small" onclick="limpiarHorariosLibres()">Limpiar libres</button>
+          </div>
+          <div class="spaces-grid-wrap">
+            <table class="spaces-grid">
+              <thead id="espaciosHead"></thead>
+              <tbody id="espaciosBody"></tbody>
+            </table>
+          </div>
+          <div class="available-sheet" id="horariosLibresCard">
+            <div class="available-header">
+              <div class="available-logo">🧠</div>
+              <h3>Horarios disponibles</h3>
+              <p>Elige el horario que mejor te funcione.</p>
+            </div>
+            <div id="horariosLibresLista" class="available-list-empty">Selecciona horarios con el botón Liberar</div>
+            <div class="available-actions">
+              <button class="btn primary" type="button" onclick="descargarHorariosLibresJPG()">Descargar JPG vertical</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mod-config" class="module">
+      <div class="card">
+        <div class="card-h"><div><h3>Cuenta</h3><small>Cambia tu contraseña</small></div></div>
+        <div class="card-b">
+          <form id="formPass" onsubmit="guardarCambioPassword(event)">
+            <div class="form-group"><label>Contraseña actual</label><input id="passActual" type="password" required></div>
+            <div class="form-group"><label>Nueva contraseña</label><input id="passNueva" type="password" minlength="8" required></div>
+            <div class="form-group"><label>Confirmar contraseña</label><input id="passConfirmar" type="password" minlength="8" required></div>
+            <button class="btn primary" style="width:100%" type="submit">Cambiar contraseña</button>
+            <div id="passMsg"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button id="tab-agenda" class="tab active" onclick="mostrarModulo('agenda')"><span>📅</span>Agenda</button>
+    <button id="tab-finanzas" class="tab" onclick="mostrarModulo('finanzas')"><span>💳</span>Finanzas</button>
+    <button id="tab-historialPendientes" class="tab" onclick="mostrarModulo('historialPendientes')"><span>⚠️</span>Pendientes</button>
+    <button id="tab-pendientesAgendar" class="tab" onclick="mostrarModulo('pendientesAgendar')"><span>📌</span>Agendar</button>
+    <button id="tab-espacios" class="tab" onclick="mostrarModulo('espacios')"><span>🕒</span>Espacios</button>
+    <button id="tab-config" class="tab" onclick="mostrarModulo('config')"><span>⚙️</span>Cuenta</button>
+  </nav>
+</section>
+
+<div id="securityTimeoutOverlay" class="security-timeout-overlay">
+  <div class="security-timeout-card">
+    <h3>Tu sesión está a punto de cerrarse por inactividad.</h3>
+    <p>Por seguridad, el sistema cerrará la sesión automáticamente.</p>
+    <div id="securityTimeoutCountdown" class="security-timeout-count">02:00</div>
+    <button class="btn primary" style="width:100%" onclick="continuarSesionPorActividad()">Continuar trabajando</button>
+  </div>
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbw7JLGlOoEY7pVgWgA-Dq6nypcUf7rkhejrs102D7FFvyKyaEba5P19mXOngc-xBOIKNA/exec";
+const STORAGE_USER="pca_terapeuta_portal_user_v2";
+let usuarioActivo=null, agendaData=null, finData=null, loadingCount=0;
+let inactivityWarningTimer=null,inactivityLogoutTimer=null,inactivityCountdownTimer=null,inactivityDeadline=null,inactivityWarningVisible=false;
+const INACTIVITY_LIMIT_MS=30*60*1000, INACTIVITY_WARNING_MS=28*60*1000;
+const HORAS=["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+
+function showLoading(t="Cargando..."){loadingCount++;const el=document.getElementById("loading");el.textContent=t;el.classList.add("show")}
+function hideLoading(){loadingCount=Math.max(0,loadingCount-1);if(!loadingCount)document.getElementById("loading").classList.remove("show")}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function msg(id,text,type="ok"){const el=document.getElementById(id);if(el)el.innerHTML=`<div class="msg ${type}">${esc(text)}</div>`}
+function dinero(n){return "$ "+Number(n||0).toFixed(2)}
+function parseISO(s){const [y,m,d]=String(s).split("-").map(Number);return new Date(y,m-1,d)}
+function fmtISO(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function hoyISO(){return fmtISO(new Date())}
+function addDays(iso,n){const d=parseISO(iso);d.setDate(d.getDate()+n);return fmtISO(d)}
+function lunes(iso){const d=parseISO(iso),day=d.getDay(),diff=day===0?-6:1-day;d.setDate(d.getDate()+diff);return fmtISO(d)}
+function jueves(iso){const d=parseISO(iso),day=d.getDay(),diff=day>=4?4-day:-(day+3);d.setDate(d.getDate()+diff);return fmtISO(d)}
+function fechaMX(iso){const d=parseISO(iso);return d.toLocaleDateString("es-MX",{day:"numeric",month:"numeric",year:"numeric"})}
+function fechaCorta(iso){return parseISO(iso).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}
+function nombreDia(iso){return parseISO(iso).toLocaleDateString("es-MX",{weekday:"short"}).replace(".","")}
+function normal(v){return String(v||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function horaBonita(h){const [hh,mm]=String(h||"").split(":").map(Number);if(isNaN(hh))return h||"";const suf=hh>=12?"p.m.":"a.m.";const h12=hh%12||12;return `${h12}:${String(mm||0).padStart(2,"0")}:00 ${suf}`}
+function claseCita(c){const e=normal(c.EstadoCita);const p=normal(c.PagoEstado);if(e.includes("cancel")||e.includes("no asist"))return"cancelada";if(e.includes("asist"))return"asistio";if(e.includes("confirm"))return"confirmada";if(p.includes("pend")||p.includes("parcial"))return"pendiente";return""}
+
+async function apiGet(accion,params={}){showLoading();try{const url=new URL(API_URL);url.searchParams.set("accion",accion);Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));const r=await fetch(url.toString());return await r.json()}finally{hideLoading()}}
+async function apiPost(payload){showLoading("Guardando...");try{const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload),headers:{"Content-Type":"text/plain;charset=utf-8"}});return await r.json()}finally{hideLoading()}}
+
+async function login(){
+ const usuarioLogin=document.getElementById("loginUsuario").value.trim(),password=document.getElementById("loginPassword").value;
+ if(!usuarioLogin||!password){msg("loginMsg","Escribe usuario y contraseña.","error");return}
+ try{msg("loginMsg","Validando...","ok");const r=await apiPost({accion:"loginUsuario",usuarioLogin,password});
+ if(!r.ok){msg("loginMsg",r.mensaje||"No se pudo iniciar sesión.","error");return}
+ if(String(r.usuario.Rol||"")!=="Terapeuta"||!r.usuario.TerapeutaID){msg("loginMsg","Este portal es solo para terapeutas.","error");return}
+ usuarioActivo=r.usuario;sessionStorage.setItem(STORAGE_USER,JSON.stringify(usuarioActivo));iniciarApp();
+ }catch(e){msg("loginMsg","Error de conexión: "+e.message,"error")}
+}
+function cerrarSesion(){detenerMonitoreoInactividad();sessionStorage.removeItem(STORAGE_USER);usuarioActivo=null;document.getElementById("appScreen").classList.add("hidden");document.getElementById("loginScreen").classList.remove("hidden");document.getElementById("loginPassword").value=""}
+async function iniciarApp(){
+ document.getElementById("loginScreen").classList.add("hidden");document.getElementById("appScreen").classList.remove("hidden");
+ document.getElementById("userName").textContent=usuarioActivo.Nombre||"Terapeuta";document.getElementById("userMeta").textContent=usuarioActivo.UsuarioLogin+" · "+usuarioActivo.TerapeutaID;document.getElementById("avatar").textContent=(usuarioActivo.Nombre||"T").trim().charAt(0).toUpperCase();
+ document.getElementById("agendaFecha").value=hoyISO();document.getElementById("finFecha").value=hoyISO();
+ const ef=document.getElementById("espFechaBase"); if(ef) ef.value=hoyISO();
+ iniciarMonitoreoInactividad();await cargarAgenda();await cargarFinanzas();
+}
+function mostrarModulo(n){
+ document.querySelectorAll(".module").forEach(m=>m.classList.remove("active"));
+ document.getElementById("mod-"+n).classList.add("active");
+ document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+ document.getElementById("tab-"+n).classList.add("active");
+ if(n==="agenda")cargarAgenda();
+ if(n==="finanzas")cargarFinanzas();
+ if(n==="historialPendientes")cargarHistorialPendientes();
+ if(n==="pendientesAgendar")cargarPendientesAgendar();
+ if(n==="espacios")cargarEspacios();
+}
+
+async function cargarAgenda(){
+ const base=document.getElementById("agendaFecha").value||hoyISO();
+ const actual=lunes(base), inicio=addDays(actual,-7), fin=addDays(actual,20);
+ const r=await apiGet("obtenerPortalTerapeutaAgenda4Semanas",{terapeutaID:usuarioActivo.TerapeutaID,fechaBase:base});
+ if(!r.ok){document.getElementById("agenda4").innerHTML=`<div class="empty">${esc(r.mensaje||"No se pudo cargar agenda")}</div>`;return}
+ agendaData=r;document.getElementById("agendaRango").textContent=`${fechaCorta(inicio)} a ${fechaCorta(fin)}`;renderAgenda4();
+}
+function renderAgenda4(){
+ const labels=["Semana anterior","Semana actual","Semana siguiente","Semana +2"];
+ const classes=["past","current","next","future"];
+ document.getElementById("agenda4").innerHTML=(agendaData.semanas||[]).map((sem,idx)=>renderSemana(sem,labels[idx]||"Semana",classes[idx]||"")).join("");
+}
+function renderSemana(sem,label,cls){
+ const dias=sem.dias||[];
+ const header=`<div class="week-head-cell wknum">${sem.numeroSemana||""}</div>${dias.map(d=>`<div class="week-head-cell"><strong>${nombreDia(d.fecha)}</strong><span>${fechaMX(d.fecha)}</span></div>`).join("")}`;
+ const rows=HORAS.map(h=>`<div class="time-cell">${h}</div>${dias.map(d=>renderSlot(d,h)).join("")}`).join("");
+ return `<section class="week-card ${cls}"><div class="week-scroll"><div class="week-grid">${header}${rows}</div></div><div style="padding:6px 8px;font-size:11px;font-weight:900;color:#334155">${label} · ${fechaCorta(sem.fechaInicio)} a ${fechaCorta(sem.fechaFin)}</div></section>`;
+}
+function renderSlot(d,hora){
+ const citas=(d.citas||[]).filter(c=>String(c.HoraInicio||"").slice(0,5)===hora);
+ return `<div class="slot">${citas.map(c=>`<button class="appt-name ${claseCita(c)}" title="${esc(c.NombrePaciente)}" onclick='abrirWhatsAppCita(${JSON.stringify(c).replace(/'/g,"&#39;")})'>${esc(c.NombrePaciente)}</button>`).join("")}</div>`;
+}
+function abrirWhatsAppCita(c){
+ const tel=String(c.TelefonoPaciente||"").replace(/\D/g,"");
+ if(!tel){alert("Este paciente no tiene teléfono registrado.");return}
+ const fecha=c.FechaCita;
+ const manana=addDays(hoyISO(),1);
+ const cuando=fecha===manana?"mañana":"el día "+fechaMX(fecha);
+ const primerNombre=String(c.NombrePaciente||"").trim().split(/\s+/)[0]||"";
+ const texto=`Hola ${primerNombre} Espero que te encuentres bien👌\n\nEste mensaje es solo para recordarte que ${cuando} tienes una cita a las ${horaBonita(c.HoraInicio)}🛋️`;
+ window.open(`https://wa.me/52${tel}?text=${encodeURIComponent(texto)}`,"_blank");
+}
+function moverBase(n){document.getElementById("agendaFecha").value=addDays(document.getElementById("agendaFecha").value||hoyISO(),n);cargarAgenda()}
+function agendaHoy(){document.getElementById("agendaFecha").value=hoyISO();cargarAgenda()}
+
+
+async function cargarDescuentosExistentesCorte(fechaInicio,fechaFin){
+ try{
+   const r=await apiGet("obtenerConfiguracionCorteTerapeutas",{fechaInicio,fechaFin});
+   return r&&r.ok?r:{ok:true,descuentos:[]};
+ }catch(e){
+   return {ok:true,descuentos:[]};
+ }
+}
+function etiquetaPagoPortalExistente(estadoPago,pagado,esperado){
+ const e=normal(estadoPago);
+ if(e==="pagado"||e==="pagada")return"Pago";
+ if(e==="parcial")return"Parcial";
+ if(e==="cortesia"||e==="exento"||e==="sin cargo")return"Pago";
+ if(Number(esperado||0)>0&&Number(pagado||0)>=Number(esperado||0))return"Pago";
+ if(Number(pagado||0)>0)return"Parcial";
+ return"Pendiente";
+}
+
+async function cargarPendientesPagoCorteExistentes(fechaInicio,fechaFin){
+ try{
+   const r=await apiGet("obtenerPortalTerapeutaAgenda4Semanas",{terapeutaID:usuarioActivo.TerapeutaID,fechaBase:fechaInicio});
+   if(!r||!r.ok)return [];
+   const citas=[];
+   (r.semanas||[]).forEach(sem=>(sem.dias||[]).forEach(d=>(d.citas||[]).forEach(c=>citas.push(c))));
+   const vistos=new Set();
+   return citas.filter(c=>{
+     if(!c||!c.CitaID||vistos.has(c.CitaID))return false;
+     vistos.add(c.CitaID);
+     const f=String(c.FechaCita||"").slice(0,10);
+     return f>=fechaInicio&&f<=fechaFin&&esEstadoNormal(c.EstadoCita,["asistio","asistida","atendida"])&&esEstadoNormal(c.PagoEstado,["pendiente","parcial","sin pago"]);
+   }).map(c=>{
+     const costo=Number(c.CostoSesion||0);
+     const pagado=Number(c.MontoPagado||0);
+     return {...c,SaldoPendiente:Math.max(costo-pagado,0)};
+   }).sort((a,b)=>String(a.FechaCita).localeCompare(String(b.FechaCita))||String(a.HoraInicio).localeCompare(String(b.HoraInicio))||String(a.NombrePaciente).localeCompare(String(b.NombrePaciente),"es"));
+ }catch(e){
+   console.warn("No se pudieron cargar pendientes del corte",e);
+   return [];
+ }
+}
+function esEstadoNormal(valor,opciones){return opciones.includes(normal(valor));}
+function renderPendientesPago(){
+ const lista=document.getElementById("pendientesPagoLista");
+ const resumen=document.getElementById("finPendientesResumen");
+ const arr=finData.pendientesPago||[];
+ const total=arr.reduce((s,x)=>s+Number(x.SaldoPendiente||0),0);
+ if(resumen)resumen.textContent=`${arr.length} pendiente${arr.length===1?"":"s"} · ${dinero(total)}`;
+ if(!lista)return;
+ if(!arr.length){lista.innerHTML=`<div class="empty" style="padding:12px">Sin pacientes pendientes por pagar en este corte.</div>`;return}
+ lista.innerHTML=arr.map(c=>`<div class="pending-item">
+   <div><b>${esc(c.NombrePaciente||"")}</b><small>${fechaMX(c.FechaCita)} · ${esc(c.HoraInicio||"")} · ${esc(c.Servicio||"")}</small><span class="pill-mini">${esc(c.PagoEstado||"")}</span></div>
+   <div class="pending-amount">${dinero(c.SaldoPendiente||0)}</div>
+ </div>`).join("");
+}
+
+async function cargarFinanzas(){
+ const fecha=document.getElementById("finFecha").value||hoyISO();
+ const ini=jueves(fecha), fin=addDays(ini,6);
+
+ // Usa SOLO scripts existentes: el mismo endpoint que usa Administración > Corte terapeutas.
+ const [r,cfg,pendientesPago]=await Promise.all([
+   apiGet("calcularComisionTerapeutas",{fechaInicio:ini,fechaFin:fin}),
+   cargarDescuentosExistentesCorte(ini,fin),
+   cargarPendientesPagoCorteExistentes(ini,fin)
+ ]);
+
+ if(!r.ok){document.getElementById("finTabla").innerHTML=`<tr><td colspan="9">${esc(r.mensaje||"No se pudo cargar")}</td></tr>`;return}
+
+ const terapeutaID=usuarioActivo.TerapeutaID;
+ const t=(r.terapeutas||[]).find(x=>String(x.TerapeutaID)===String(terapeutaID))||{
+   TerapeutaID:terapeutaID,NombreTerapeuta:usuarioActivo.Nombre,TotalConsultas:0,TotalCobrado:0,TotalDescuentos:0,TotalAjustado:0,BaseSinIVA:0,TotalPagarTerapeuta:0,Detalle:[]
+ };
+
+ const descuentos=(cfg.descuentos||[]).filter(d=>String(d.TerapeutaID)===String(terapeutaID)&&String(d.Activo||"Sí")==="Sí");
+ const totalDescuentosExternos=descuentos.reduce((s,d)=>s+Number(d.Monto||0),0);
+ const iva=Number(r.iva||1.16);
+ const porcentaje=Number(t.PorcentajeTerapeuta||r.porcentajeTerapeuta||70);
+
+ const filas=(t.Detalle||[]).map(d=>{
+   const montoPagado=Number(d.MontoPagado||0);
+   const descuento=Number(d.DescuentoAdministrativo||0);
+   const montoAjustado=Number(d.MontoAjustado||Math.max(montoPagado-descuento,0));
+   const montoTerapeuta=(montoAjustado/iva)*(porcentaje/100);
+   return {
+     Fecha:d.FechaPagable||d.FechaPago||"",
+     FechaPago:d.FechaPago||"",
+     FechaPagable:d.FechaPagable||d.FechaPago||"",
+     Nombre:d.NombrePaciente||"",
+     NombrePaciente:d.NombrePaciente||"",
+     Pago:etiquetaPagoPortalExistente(d.EstadoPago,montoPagado,montoPagado),
+     Status:"Asistió",
+     Servicio:d.Servicio||"",
+     MetodoPago:d.MetodoPago||"",
+     MontoPagado:montoPagado,
+     DescuentoAdministrativo:descuento,
+     MontoAjustado:montoAjustado,
+     MontoTerapeuta:montoTerapeuta,
+     Referencia:d.Referencia||""
+   };
+ }).sort((a,b)=>String(a.FechaPagable).localeCompare(String(b.FechaPagable))||String(a.Nombre).localeCompare(String(b.Nombre),"es"));
+
+ finData={
+   ok:true,
+   fuenteCalculo:"calcularComisionTerapeutas existente",
+   fechaInicio:ini,
+   fechaFin:fin,
+   terapeuta:t,
+   filas,
+   descuentos,
+   pendientesPago,
+   totales:{
+     totalFilas:filas.length,
+     totalCobrado:Number(t.TotalCobrado||0),
+     totalAjustesAdministrativos:Number(t.TotalDescuentos||0),
+     totalAjustado:Number(t.TotalAjustado||0),
+     baseSinIVA:Number(t.BaseSinIVA||0),
+     totalTerapeutaBruto:Number(t.TotalPagarTerapeuta||0),
+     totalDescuentosExternos,
+     totalTerapeutaNeto:Math.max(Number(t.TotalPagarTerapeuta||0)-totalDescuentosExternos,0)
+   }
+ };
+
+ document.getElementById("finRango").textContent=`Corte ${fechaMX(ini)} a ${fechaMX(fin)}`;
+ document.getElementById("finTotal").textContent=dinero(finData.totales.totalTerapeutaNeto);
+ document.getElementById("finTotalCantidad").textContent=`${filas.length} pago${filas.length===1?"":"s"}`;
+ document.getElementById("finDesc").textContent=dinero(finData.totales.totalDescuentosExternos);
+ renderPendientesPago();
+ renderFinTabla();
+ renderDescuentos();
+}
+function renderFinTabla(){
+ const tbody=document.getElementById("finTabla");const rows=finData.filas||[];
+ if(!rows.length){tbody.innerHTML=`<tr><td colspan="7">Sin pagos pagables en este corte.</td></tr>`;return}
+ tbody.innerHTML=rows.map(x=>`<tr>
+  <td>${fechaMX(x.FechaPagable||x.Fecha||x.FechaPago)}</td>
+  <td>${esc(x.Nombre||x.NombrePaciente)}</td>
+  <td><span class="status ${normal(x.Pago)==="pago"?"pago":normal(x.Pago)==="parcial"?"parcial":"pendiente"}">${esc(x.Pago)}</span></td>
+  <td>${esc(x.Status||"Asistió")}</td>
+  <td><span class="money">${dinero(x.MontoTerapeuta)}</span></td>
+  <td>${dinero(x.MontoPagado)}</td>
+  <td>${esc(x.MetodoPago||"")}</td>
+ </tr>`).join("");
+}
+function renderDescuentos(){
+ const el=document.getElementById("descuentosLista");const arr=finData.descuentos||[];
+ if(!arr.length){el.innerHTML=`<div class="empty">Sin descuentos agregados en este corte.</div>`;return}
+ el.innerHTML=arr.map(d=>`<div class="discount-item"><div><strong>${esc(d.Concepto)}</strong><span>${fechaMX(d.FechaInicio)} - ${fechaMX(d.FechaFin)}</span></div><div class="money bad">-${dinero(d.Monto)}</div></div>`).join("");
+}
+function moverCorte(n){document.getElementById("finFecha").value=addDays(document.getElementById("finFecha").value||hoyISO(),n);cargarFinanzas()}
+function finHoy(){document.getElementById("finFecha").value=hoyISO();cargarFinanzas()}
+
+
+function saldoPendienteCita(c){
+ const costo=Number(c.CostoSesion||c.MontoEsperado||0);
+ const pagado=Number(c.MontoPagado||0);
+ return Math.max(costo-pagado,0);
+}
+function esCitaAsistida(c){return ["asistio","asistida","atendida"].includes(normal(c.EstadoCita||c.Status))}
+function esPagoPendiente(c){return ["pendiente","parcial","sin pago","sinpago"].includes(normal(c.PagoEstado||c.EstadoPago||c.Pago))}
+function citasDeAgendaActual(){
+ const out=[];
+ (agendaData?.semanas||[]).forEach(s=>(s.dias||[]).forEach(d=>(d.citas||[]).forEach(c=>out.push(c))));
+ return out;
+}
+async function cargarHistorialPendientes(){
+ const inicio=document.getElementById("histPendInicio").value||"";
+ const fin=document.getElementById("histPendFin").value||"";
+ try{
+   const r=await apiGet("obtenerHistorialPendientesPagoTerapeuta",{terapeutaID:usuarioActivo.TerapeutaID,fechaInicio:inicio,fechaFin:fin});
+   renderHistorialPendientes(r.pendientes||[]);
+ }catch(e){
+   // Respaldo con datos visibles de agenda 4 semanas si el endpoint aún no está pegado.
+   if(!agendaData) await cargarAgenda();
+   const arr=citasDeAgendaActual().filter(c=>{
+     const f=c.FechaCita;
+     const enRango=(!inicio||f>=inicio)&&(!fin||f<=fin);
+     return enRango&&esCitaAsistida(c)&&esPagoPendiente(c);
+   }).map(c=>({FechaCita:c.FechaCita,NombrePaciente:c.NombrePaciente,Servicio:c.Servicio,CostoSesion:c.CostoSesion,MontoPagado:c.MontoPagado,SaldoPendiente:saldoPendienteCita(c),PagoEstado:c.PagoEstado}));
+   renderHistorialPendientes(arr);
+ }
+}
+function renderHistorialPendientes(arr){
+ const tb=document.getElementById("histPendTabla");
+ const total=(arr||[]).reduce((s,x)=>s+Number(x.SaldoPendiente||0),0);
+ document.getElementById("histPendTotal").textContent=dinero(total);
+ document.getElementById("histPendCantidad").textContent=(arr||[]).length;
+ if(!arr.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">Sin pendientes en el rango seleccionado.</div></td></tr>`;return}
+ tb.innerHTML=arr.map(x=>`<tr>
+  <td>${fechaMX(x.FechaCita||x.Fecha||"")}</td>
+  <td>${esc(x.NombrePaciente||x.Nombre||"")}</td>
+  <td>${esc(x.Servicio||"")}</td>
+  <td>${dinero(x.CostoSesion||x.MontoEsperado||0)}</td>
+  <td>${dinero(x.MontoPagado||0)}</td>
+  <td class="money bad">${dinero(x.SaldoPendiente||0)}</td>
+  <td>${esc(x.PagoEstado||x.EstadoPago||"")}</td>
+ </tr>`).join("");
+}
+async function cargarPendientesAgendar(){
+ try{
+   const r=await apiGet("obtenerPacientesSinCitaFuturaTerapeuta",{terapeutaID:usuarioActivo.TerapeutaID});
+   window.pendientesAgendarData=r.pacientes||[];
+   renderPendientesAgendarFiltrado();
+ }catch(e){
+   document.getElementById("pendAgTabla").innerHTML=`<tr><td colspan="8"><div class="empty">Para cargar esta lista completa necesitas pegar el bloque extra V2.6. ${esc(e.message||"")}</div></td></tr>`;
+ }
+}
+function renderPendientesAgendar(arr){
+ window.pendientesAgendarData=arr||[];
+ renderPendientesAgendarFiltrado();
+}
+function enviarRecepcionPendiente(p,i){
+ const fecha=document.getElementById("paFecha_"+i).value;
+ const hora=document.getElementById("paHora_"+i).value;
+ if(!fecha||!hora){alert("Selecciona fecha y hora propuesta.");return}
+ const nombre=p.NombrePaciente||p.NombreCompleto||"";
+ const texto=`Hola\n\nSolicito apoyo para agendar formalmente a:\nPaciente: ${nombre}\nFecha propuesta: ${fechaMX(fecha)}\nHora propuesta: ${horaBonita(hora)}\n\nGracias.`;
+ window.open(`https://wa.me/526672307484?text=${encodeURIComponent(texto)}`,"_blank");
+}
+function ofrecerEspaciosPaciente(p,i){
+ const tel=String(p.Telefono||p.TelefonoPaciente||"").replace(/\D/g,"");
+ if(!tel){alert("Este paciente no tiene teléfono registrado.");return}
+ const nombre=(p.NombrePaciente||p.NombreCompleto||"").trim().split(/\s+/)[0]||"";
+ const texto=`Hola ${nombre} Espero que te encuentres bien👌\n\nTe comparto los horarios disponibles y te invito a que escojas el que mejor se adapte a tu agenda. Te agradezco que me envíes tu respuesta lo más pronto posible, ya que también estoy coordinando con otros pacientes. ¡Gracias!`;
+ marcarPacienteContactado(pacienteKey(p));
+ const row=document.getElementById("pendPacienteRow_"+i);
+ if(row)row.classList.add("paciente-contactado");
+ window.open(`https://wa.me/52${tel}?text=${encodeURIComponent(texto)}`,"_blank");
+}
+
+
+function getPacientesContactadosSet(){
+ try{return new Set(JSON.parse(sessionStorage.getItem("pca_pacientes_contactados_agendar")||"[]"))}catch(e){return new Set()}
+}
+function marcarPacienteContactado(id){
+ if(!id)return;
+ const set=getPacientesContactadosSet();
+ set.add(String(id));
+ sessionStorage.setItem("pca_pacientes_contactados_agendar",JSON.stringify([...set]));
+}
+function pacienteKey(p){return String(p.PacienteID||p.pacienteID||p.Telefono||p.TelefonoPaciente||p.NombrePaciente||p.NombreCompleto||"")}
+function pacienteYaContactado(p){return getPacientesContactadosSet().has(pacienteKey(p))}
+
+
+function calcularFrecuenciaPaciente(p){
+ const fechas=(p.UltimasCitasAsistidas||p.ultimasCitasAsistidas||p.FechasAsistidas||[])
+   .map(f=>normalizarFechaLocal(f))
+   .filter(Boolean)
+   .sort();
+ if(fechas.length<2){
+   const dias=Number(p.DiasSinCita||0);
+   return {tipo:"nuevo", etiqueta:"Nuevo/sin historial", intervalo:0, estado:"sin datos", grupo:"Nuevos / sin historial", orden:90};
+ }
+ const diffs=[];
+ for(let i=1;i<fechas.length;i++){
+   const d=diasEntreLocal(fechas[i-1],fechas[i]);
+   if(d>0 && d<=75) diffs.push(d);
+ }
+ if(!diffs.length){
+   return {tipo:"irregular", etiqueta:"Irregular", intervalo:0, estado:"sin patrón", grupo:"Irregulares", orden:80};
+ }
+ diffs.sort((a,b)=>a-b);
+ const mediana=diffs[Math.floor(diffs.length/2)];
+ const dias=Number(p.DiasSinCita||0);
+ let tipo="irregular", etiqueta="Irregular", esperado=0;
+ if(mediana>=5 && mediana<=9){tipo="semanal";etiqueta="Semanal";esperado=7}
+ else if(mediana>=10 && mediana<=18){tipo="quincenal";etiqueta="Quincenal";esperado=14}
+ else if(mediana>=24 && mediana<=38){tipo="mensual";etiqueta="Mensual";esperado=30}
+ else {tipo="irregular";etiqueta="Irregular";esperado=Math.round(mediana)}
+ let estado="al día", grupo="Irregulares", orden=80, statusClass="ok";
+ if(tipo==="semanal"){
+   if(dias>=7){estado="vencido";grupo="Semanales vencidos";orden=10;statusClass="vencido"}
+   else {estado="próximo";grupo="Semanales próximos";orden=15;statusClass="proximo"}
+ }else if(tipo==="quincenal"){
+   if(dias>=14){estado="vencido";grupo="Quincenales vencidos";orden=20;statusClass="vencido"}
+   else if(dias>=8){estado="próximo";grupo="Quincenales próximos";orden=30;statusClass="proximo"}
+   else {estado="todavía no toca";grupo="Quincenales recientes";orden=45;statusClass="ok"}
+ }else if(tipo==="mensual"){
+   if(dias>=30){estado="vencido";grupo="Mensuales vencidos";orden=40;statusClass="vencido"}
+   else if(dias>=21){estado="próximo";grupo="Mensuales próximos";orden=50;statusClass="proximo"}
+   else {estado="todavía no toca";grupo="Mensuales recientes";orden=60;statusClass="ok"}
+ }else{
+   estado="revisar";grupo="Irregulares";orden=80;statusClass="proximo";
+ }
+ return {tipo, etiqueta, intervalo:Math.round(mediana), esperado, estado, grupo, orden, statusClass};
+}
+function normalizarFechaLocal(f){
+ if(!f)return"";
+ if(typeof f==="string"){
+   const s=f.trim();
+   if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+   const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+   if(m)return `${m[3]}-${String(m[2]).padStart(2,"0")}-${String(m[1]).padStart(2,"0")}`;
+ }
+ const d=new Date(f);
+ if(!isNaN(d))return fmtISO(d);
+ return "";
+}
+function diasEntreLocal(a,b){
+ const da=parseISO(a), db=parseISO(b);
+ return Math.round((db-da)/86400000);
+}
+
+function renderPendientesAgendarFiltrado(){
+ const diasMax=Number(document.getElementById("pendAgDiasMin")?.value||0);
+ const orden=document.getElementById("pendAgOrden")?.value||"az";
+ let arr=[...(window.pendientesAgendarData||[])].filter(p=>{
+   const dias=Number(p.DiasSinCita||0);
+   return diasMax<=0 ? true : dias<=diasMax;
+ }).map(p=>({...p, FrecuenciaCalc:calcularFrecuenciaPaciente(p)}));
+
+ if(orden==="diasAsc")arr.sort((a,b)=>Number(a.DiasSinCita||0)-Number(b.DiasSinCita||0)||String(a.NombrePaciente||a.NombreCompleto||"").localeCompare(String(b.NombrePaciente||b.NombreCompleto||""),"es"));
+ else if(orden==="diasDesc")arr.sort((a,b)=>Number(b.DiasSinCita||0)-Number(a.DiasSinCita||0)||String(a.NombrePaciente||a.NombreCompleto||"").localeCompare(String(b.NombrePaciente||b.NombreCompleto||""),"es"));
+ else arr.sort((a,b)=>(a.FrecuenciaCalc.orden-b.FrecuenciaCalc.orden)||String(a.NombrePaciente||a.NombreCompleto||"").localeCompare(String(b.NombrePaciente||b.NombreCompleto||""),"es"));
+
+ document.getElementById("pendAgCantidad").textContent=arr.length;
+ const tb=document.getElementById("pendAgTabla");
+ if(!arr.length){tb.innerHTML=`<tr><td colspan="8"><div class="empty">Sin pacientes con ${diasMax} días o menos sin asistir.</div></td></tr>`;return}
+
+ let htmlRows="";
+ let grupoActual="";
+ arr.forEach((p,i)=>{
+   const f=p.FrecuenciaCalc;
+   if(f.grupo!==grupoActual){
+     grupoActual=f.grupo;
+     htmlRows+=`<tr class="freq-row"><td colspan="8">${esc(grupoActual)} <span class="freq-badge ${f.tipo}">${esc(f.etiqueta)}</span></td></tr>`;
+   }
+   const contactado=pacienteYaContactado(p);
+   htmlRows+=`<tr id="pendPacienteRow_${i}" class="${contactado?"paciente-contactado":""}">
+    <td>${esc(p.NombrePaciente||p.NombreCompleto||"")}<br><span class="freq-status ${f.statusClass}">${esc(f.etiqueta)} · ${esc(f.estado)}${f.intervalo?` · cada ${f.intervalo} días`:``}</span></td>
+    <td>${esc(p.Telefono||p.TelefonoPaciente||"")}</td>
+    <td>${fechaMX(p.FechaUltimaCita||"")}</td>
+    <td>${Number(p.DiasSinCita||0)}</td>
+    <td><input type="date" id="paFecha_${i}"></td>
+    <td><input type="time" id="paHora_${i}"></td>
+    <td><button class="sheet-btn" onclick='enviarRecepcionPendiente(${JSON.stringify(p).replace(/'/g,"&#39;")},"${i}")'>Recepción</button></td>
+    <td><button class="sheet-btn light" onclick='ofrecerEspaciosPaciente(${JSON.stringify(p).replace(/'/g,"&#39;")},"${i}")'>Paciente</button></td>
+   </tr>`;
+ });
+ tb.innerHTML=htmlRows;
+}
+async function cargarEspacios(){
+ const base=document.getElementById("espFechaBase")?.value||hoyISO();
+ const inicio=lunes(base);
+ const r=await apiGet("obtenerPortalTerapeutaAgenda4Semanas",{terapeutaID:usuarioActivo.TerapeutaID,fechaBase:base});
+ if(!r.ok){document.getElementById("espaciosBody").innerHTML=`<tr><td colspan="8">${esc(r.mensaje||"No se pudo cargar espacios")}</td></tr>`;return}
+ const semana=(r.semanas||[]).find(s=>s.fechaInicio===inicio) || (r.semanas||[])[1] || (r.semanas||[])[0];
+ window.espaciosSemanaActual=semana;
+ window.horariosLibresSeleccionados=window.horariosLibresSeleccionados||[];
+
+ window.ocupacionGlobalPorDia={};
+ await Promise.all((semana?.dias||[]).map(async d=>{
+   try{
+     const info=await apiGet("obtenerInicioOperativo",{fecha:d.fecha});
+     window.ocupacionGlobalPorDia[d.fecha]=info&&info.ok?info:null;
+   }catch(e){
+     window.ocupacionGlobalPorDia[d.fecha]=null;
+   }
+ }));
+
+ renderEspaciosSemana();
+}
+function renderEspacios(arr){
+ renderEspaciosSemana();
+}
+async function cambiarBloqueoEspacio(x,disponible){
+ if(x) liberarHorario(x.Fecha||x.fecha,x.Hora||x.HoraInicio||x.hora);
+}
+
+
+
+function moverSemanaEspacios(n){const el=document.getElementById("espFechaBase");el.value=addDays(el.value||hoyISO(),n);cargarEspacios()}
+function semanaActualEspacios(){document.getElementById("espFechaBase").value=hoyISO();cargarEspacios()}
+
+async function actualizarEspaciosForzado(){
+ const btns=[...document.querySelectorAll("button")].filter(b=>String(b.textContent||"").includes("Actualizar espacios"));
+ btns.forEach(b=>{b.disabled=true;b.textContent="Actualizando..."});
+ try{
+   // Limpia cache visual de ocupación para volver a consultar la agenda real.
+   window.espaciosSemanaActual=null;
+   window.ocupacionGlobalPorDia={};
+   await cargarEspacios();
+ }finally{
+   btns.forEach(b=>{b.disabled=false;b.textContent="Actualizar espacios"});
+ }
+}
+function limpiarHorariosLibres(){
+ window.horariosLibresSeleccionados=[];
+ renderEspaciosSemana();
+}
+
+
+function depurarHorariosSeleccionadosContraAgenda(){
+ const sem=window.espaciosSemanaActual;
+ if(!sem||!window.horariosLibresSeleccionados)return;
+ window.horariosLibresSeleccionados=window.horariosLibresSeleccionados.filter(x=>{
+   const dia=(sem.dias||[]).find(d=>d.fecha===x.fecha);
+   if(!dia)return true;
+   const ocupado=(dia.citas||[]).some(c=>String(c.HoraInicio||"").slice(0,5)===x.hora && esCitaActivaParaEspacio(c));
+   if(ocupado)return false;
+   if(typeof consultoriosLlenosEnHora==="function" && consultoriosLlenosEnHora(x.fecha,x.hora))return false;
+   return true;
+ });
+}
+
+function renderEspaciosSemana(){
+ depurarHorariosSeleccionadosContraAgenda();
+ const sem=window.espaciosSemanaActual;const head=document.getElementById("espaciosHead");const body=document.getElementById("espaciosBody");
+ if(!sem||!(sem.dias||[]).length){head.innerHTML="";body.innerHTML=`<tr><td colspan="8"><div class="empty">Sin datos de agenda para esta semana.</div></td></tr>`;return}
+ const dias=sem.dias||[];
+ head.innerHTML=`<tr><th>Hora</th>${dias.map(d=>`<th>${nombreDia(d.fecha)}</th>`).join("")}</tr><tr class="date-row"><th></th>${dias.map(d=>`<th>${fechaMX(d.fecha)}</th>`).join("")}</tr>`;
+ body.innerHTML=HORAS.map(h=>`<tr><td class="hour-cell">${horaBonita(h)}</td>${dias.map(d=>renderCeldaEspacio(d,h)).join("")}</tr>`).join("");
+ renderHorariosLibresSeleccionados();
+}
+
+function esCitaActivaParaEspacio(c){
+ const estado=normal(c?.EstadoCita||c?.Status||"");
+ return !["cancelada","cancelado","cancelo","no asistio","noasistio","inasistencia","reagendada","reagendado","reagendar"].includes(estado);
+}
+
+
+function consultoriosLlenosEnHora(fecha,hora){
+ const info=window.ocupacionGlobalPorDia?.[fecha];
+ if(!info||!info.ok)return false;
+ const totalConsultorios=(info.consultorios||[]).filter(c=>String(c.Activo||"Sí")!=="No").length||5;
+ const ocupados=new Set();
+ (info.citas||[]).forEach(c=>{
+   const mismaHora=String(c.HoraInicio||"").slice(0,5)===hora;
+   if(!mismaHora)return;
+   if(!esCitaActivaParaEspacio(c))return;
+   const consultorio=String(c.ConsultorioID||"").trim();
+   if(consultorio)ocupados.add(consultorio);
+ });
+ return ocupados.size>=totalConsultorios;
+}
+
+function renderCeldaEspacio(d,hora){
+ const citas=(d.citas||[]).filter(c=>String(c.HoraInicio||"").slice(0,5)===hora && esCitaActivaParaEspacio(c));
+ if(citas.length)return `<td><span class="sheet-occupied">Ocupado</span></td>`;
+
+ if(consultoriosLlenosEnHora(d.fecha,hora)){
+   return `<td><span class="sheet-blocked-all">Bloqueado</span></td>`;
+ }
+
+ const id=`${d.fecha}|${hora}`;const selected=(window.horariosLibresSeleccionados||[]).some(x=>x.id===id);
+ return `<td><button class="sheet-free-btn ${selected?"selected":""}" onclick='liberarHorario("${d.fecha}","${hora}")'>${selected?"Libre":"Liberar"}</button></td>`;
+}
+function liberarHorario(fecha,hora){
+ window.horariosLibresSeleccionados=window.horariosLibresSeleccionados||[];
+ const id=`${fecha}|${hora}`;
+ const idx=window.horariosLibresSeleccionados.findIndex(x=>x.id===id);
+ if(idx>=0){
+   window.horariosLibresSeleccionados.splice(idx,1);
+ }else{
+   window.horariosLibresSeleccionados.push({id,fecha,hora});
+ }
+ renderEspaciosSemana();
+}
+function renderHorariosLibresSeleccionados(){
+ const cont=document.getElementById("horariosLibresLista");
+ const arr=[...(window.horariosLibresSeleccionados||[])].sort((a,b)=>String(a.fecha).localeCompare(String(b.fecha))||String(a.hora).localeCompare(String(b.hora)));
+ if(!arr.length){cont.className="available-list-empty";cont.innerHTML=`Selecciona horarios con el botón Liberar`;return}
+ const grupos={};
+ arr.forEach(x=>{(grupos[x.fecha]=grupos[x.fecha]||[]).push(x.hora)});
+ const fechas=Object.keys(grupos).sort();
+ cont.className="available-days";
+ cont.innerHTML=fechas.map(fecha=>{
+   const d=parseISO(fecha).getDay();
+   const horas=(grupos[fecha]||[]).sort().map(h=>`<div class="available-time-chip"><span class="clock">🕒</span><span>${horaBonita(h)}</span></div>`).join("");
+   return `<div class="available-day-card available-day-${d}"><div class="available-day-accent"></div><div class="available-day-icon">📅</div><div class="available-day-main"><div class="available-day-info"><div class="available-day-name">${nombreDia(fecha)}</div><div class="available-day-date">${fechaCortaLarga(fecha)}</div></div><div class="available-time-chips">${horas}</div></div></div>`;
+ }).join("");
+}
+function fechaLargaMX(iso){if(!iso)return"";return parseISO(iso).toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"})}
+function nombreDia(iso){if(!iso)return"";return parseISO(iso).toLocaleDateString("es-MX",{weekday:"long"})}
+function fechaCortaLarga(iso){if(!iso)return"";return parseISO(iso).toLocaleDateString("es-MX",{day:"numeric",month:"long"})}
+function colorHorarioDia(day){return [{accent:"#f97316",soft:"#ffefe5",text:"#c2410c",name:"#ea580c"},{accent:"#2563eb",soft:"#e9efff",text:"#1e40af",name:"#2563eb"},{accent:"#22c55e",soft:"#e9f9ee",text:"#166534",name:"#22c55e"},{accent:"#8b5cf6",soft:"#f1ebff",text:"#5b21b6",name:"#7c3aed"},{accent:"#ec4899",soft:"#ffeaf4",text:"#9d174d",name:"#db2777"},{accent:"#06b6d4",soft:"#e8fbff",text:"#0f766e",name:"#0891b2"},{accent:"#f59e0b",soft:"#fff5df",text:"#b45309",name:"#d97706"}][day]||{accent:"#64748b",soft:"#f1f5f9",text:"#334155",name:"#334155"}}
+async function descargarHorariosLibresJPG(){
+ const arr=[...(window.horariosLibresSeleccionados||[])].sort((a,b)=>String(a.fecha).localeCompare(String(b.fecha))||String(a.hora).localeCompare(String(b.hora)));
+ if(!arr.length){alert("No hay horarios liberados para descargar.");return}
+ const grupos={};arr.forEach(x=>{(grupos[x.fecha]=grupos[x.fecha]||[]).push(x.hora)});
+ const fechas=Object.keys(grupos).sort();
+ const width=1080,pad=54,headerH=230,gap=24,footerH=100;
+ const chipsPerRow=2;
+ const chipH=62;
+ const chipGap=16;
+ const cardBaseH=170;
+ const alturas=fechas.map(fecha=>{
+   const horas=(grupos[fecha]||[]).sort();
+   const rows=Math.max(1,Math.ceil(horas.length/chipsPerRow));
+   return cardBaseH + Math.max(0,rows-1)*(chipH+chipGap);
+ });
+ const height=headerH + alturas.reduce((a,b)=>a+b,0) + gap*(fechas.length-1) + footerH;
+ const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+ const ctx=canvas.getContext('2d');
+ ctx.fillStyle='#f7f9fc';ctx.fillRect(0,0,width,height);
+ // header
+ ctx.textAlign='center';ctx.fillStyle='#83d1d2';ctx.font='700 22px Arial';ctx.fillText('────────  ·  🧠  ·  ────────', width/2, 54);
+ ctx.fillStyle='#16284d';ctx.font='900 68px Arial';ctx.fillText('Horarios disponibles', width/2, 122);
+ ctx.fillStyle='#57657f';ctx.font='500 32px Arial';ctx.fillText('Elige el horario que mejor te funcione.', width/2, 174);
+ let y=headerH;
+ fechas.forEach((fecha,idx)=>{
+   const day=parseISO(fecha).getDay();
+   const col=colorHorarioDia(day);
+   const x=pad, w=width-pad*2;
+   const horas=(grupos[fecha]||[]).sort();
+   const rows=Math.max(1,Math.ceil(horas.length/chipsPerRow));
+   const cardH=cardBaseH + Math.max(0,rows-1)*(chipH+chipGap);
+   roundRect(ctx,x,y,w,cardH,28,'#ffffff',null,0);
+   ctx.strokeStyle='rgba(15,23,42,.06)';ctx.strokeRect(x+0.5,y+0.5,w-1,cardH-1);
+   roundRect(ctx,x,y,12,cardH,12,col.accent,null,0);
+
+   drawCircle(ctx,x+92,y+72,44,col.soft);
+   ctx.fillStyle=col.name;ctx.font='36px Arial';ctx.textAlign='center';ctx.fillText('📅',x+92,y+84);
+   ctx.strokeStyle='#e8edf6';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+190,y+30);ctx.lineTo(x+190,y+cardH-30);ctx.stroke();
+
+   ctx.textAlign='left';ctx.fillStyle=col.name;ctx.font='900 34px Arial';ctx.fillText(nombreDia(fecha),x+230,y+68);
+   ctx.fillStyle='#46536b';ctx.font='600 26px Arial';ctx.fillText(fechaCortaLarga(fecha),x+230,y+108);
+
+   const chipW=(w-230-40-chipGap)/2;
+   let chipX=x+230, chipY=y+130;
+   horas.forEach((h,i)=>{
+     const label=horaBonita(h);
+     const colNum=i%chipsPerRow;
+     const rowNum=Math.floor(i/chipsPerRow);
+     chipX=x+230 + colNum*(chipW+chipGap);
+     chipY=y+130 + rowNum*(chipH+chipGap);
+     roundRect(ctx,chipX,chipY,chipW,chipH,18,col.soft,null,0);
+     ctx.fillStyle=col.text;ctx.font='700 24px Arial';ctx.fillText('🕒',chipX+18,chipY+40);
+     ctx.font='900 24px Arial';ctx.fillText(label,chipX+58,chipY+40);
+   });
+   y+=cardH+gap;
+ });
+ ctx.textAlign='center';ctx.fillStyle='#94a3b8';ctx.font='500 19px Arial';ctx.fillText('Generado desde Portal de Terapeutas · Psicología Clínica América', width/2, height-34);
+ const link=document.createElement('a');
+ link.download='horarios_disponibles_vertical.jpg';
+ link.href=canvas.toDataURL('image/jpeg',0.95);
+ link.click();
+}
+function roundRect(ctx,x,y,w,h,r,fill,stroke,line){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=line||1;ctx.strokeStyle=stroke;ctx.stroke();}}
+function drawCircle(ctx,cx,cy,r,fill){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.closePath();ctx.fillStyle=fill;ctx.fill();}
+
+function validarPass(p){if(p.length<8)return"Debe tener al menos 8 caracteres.";if(!/[A-ZÁÉÍÓÚÑ]/.test(p))return"Debe incluir una mayúscula.";if(!/[a-záéíóúñ]/.test(p))return"Debe incluir una minúscula.";if(!/[0-9]/.test(p))return"Debe incluir un número.";return""}
+async function guardarCambioPassword(e){e.preventDefault();const actual=passActual.value,nueva=passNueva.value,conf=passConfirmar.value;if(nueva!==conf){msg("passMsg","La confirmación no coincide.","error");return}const er=validarPass(nueva);if(er){msg("passMsg",er,"error");return}const r=await apiPost({accion:"cambiarPasswordPropio",usuarioID:usuarioActivo.UsuarioID,passwordActual:actual,passwordNueva:nueva});if(!r.ok){msg("passMsg",r.mensaje||"No se pudo cambiar.","error");return}msg("passMsg","Contraseña actualizada.","ok");e.target.reset()}
+
+function iniciarMonitoreoInactividad(){detenerMonitoreoInactividad();["mousemove","mousedown","click","keydown","scroll","touchstart","touchmove","wheel"].forEach(ev=>window.addEventListener(ev,registrarActividadUsuarioSegura,{passive:true}));registrarActividadUsuarioSegura()}
+function detenerMonitoreoInactividad(){if(inactivityWarningTimer)clearTimeout(inactivityWarningTimer);if(inactivityLogoutTimer)clearTimeout(inactivityLogoutTimer);if(inactivityCountdownTimer)clearInterval(inactivityCountdownTimer);inactivityWarningTimer=null;inactivityLogoutTimer=null;inactivityCountdownTimer=null;inactivityDeadline=null}
+function registrarActividadUsuarioSegura(){if(!usuarioActivo||inactivityWarningVisible)return;if(inactivityWarningTimer)clearTimeout(inactivityWarningTimer);if(inactivityLogoutTimer)clearTimeout(inactivityLogoutTimer);inactivityDeadline=Date.now()+INACTIVITY_LIMIT_MS;inactivityWarningTimer=setTimeout(mostrarAdvertenciaInactividad,INACTIVITY_WARNING_MS);inactivityLogoutTimer=setTimeout(cerrarSesionPorInactividad,INACTIVITY_LIMIT_MS)}
+function mostrarAdvertenciaInactividad(){if(!usuarioActivo)return;inactivityWarningVisible=true;securityTimeoutOverlay.classList.add("show");actualizarCuentaRegresivaInactividad();inactivityCountdownTimer=setInterval(actualizarCuentaRegresivaInactividad,1000)}
+function actualizarCuentaRegresivaInactividad(){const restante=Math.max(0,inactivityDeadline-Date.now()),s=Math.ceil(restante/1000);securityTimeoutCountdown.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");if(restante<=0)cerrarSesionPorInactividad()}
+function continuarSesionPorActividad(){securityTimeoutOverlay.classList.remove("show");inactivityWarningVisible=false;if(inactivityCountdownTimer)clearInterval(inactivityCountdownTimer);registrarActividadUsuarioSegura()}
+function cerrarSesionPorInactividad(){securityTimeoutOverlay.classList.remove("show");cerrarSesion();msg("loginMsg","La sesión se cerró por inactividad.","error")}
+
+window.addEventListener("DOMContentLoaded",()=>{const saved=sessionStorage.getItem(STORAGE_USER);if(saved){try{usuarioActivo=JSON.parse(saved);iniciarApp()}catch(e){sessionStorage.removeItem(STORAGE_USER)}}});
+</script>
+</body>
+</html>
